@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RaizSafe (MVP)</title>
+    <link rel="shortcut icon" href="logo_raizsafe.jpg" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            /* Fundo cinza claro para destacar o app */
+        }
+
+        /* Ícones SVG embutidos para Heroicons */
+        .icon-home {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504 1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25' /%3E%3C/svg%3E");
+        }
+
+        .icon-camera {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.04l-.821 1.316Z' /%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z' /%3E%3C/svg%3E");
+        }
+
+        .icon-history {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z' /%3E%3C/svg%3E");
+        }
+
+        .icon-user {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z' /%3E%3C/svg%3E");
+        }
+
+        .icon-sparkles {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z' /%3E%3C/svg%3E");
+        }
+
+        .icon-lock {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M16.5 10.5V6.75a4.5 4.5 0 0 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z' /%3E%3C/svg%3E");
+        }
+
+        .icon-back {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 19.5 8.25 12l7.5-7.5' /%3E%3C/svg%3E");
+        }
+
+        .icon-check {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m4.5 12.75 6 6 9-13.5' /%3E%3C/svg%3E");
+        }
+
+        .icon-bug {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m15.182 16.318-2.182-2.182m2.182-2.182L13 16.318M13 16.318V13.136m0 3.182v-2.182c0-.597.237-1.17.659-1.591l2.182-2.182c.422-.422 1-.659 1.591-.659h1.5v-1.5c0-.597-.237-1.17-.659-1.591L18 8.049m-3.182 8.269L13 13.136M13 13.136l2.182-2.182m-2.182 2.182-2.182 2.182M10.818 16.318l-2.182-2.182m2.182 2.182L13 13.136m-2.182 3.182-2.182 2.182m0-2.182-2.182-2.182m2.182-2.182L8.636 13.136m2.182-3.182L8.636 7.773m2.182 2.182L13 13.136m0-3.182L10.818 7.773m2.182 2.182V13.136m0-3.182V7.773m0 2.182h2.182m-2.182 0H8.636m2.182 0H13.18m0-2.182h-2.182m2.182 0h-2.182M13.18 10.957 10.818 13.136m2.182-2.182 2.182-2.182m0 2.182-2.182 2.182m2.182-2.182 2.182 2.182M15.364 13.136 13 10.957m2.182 2.182 2.182 2.182M13 13.136l2.182 2.182M13 13.136v2.182m0-2.182v-2.182m0 2.182H10.818m2.182 0H15.364m-2.182 0V10.957m0 2.182V15.364m0-2.182H10.818m2.182 0H15.364' /%3E%3C/svg%3E");
+        }
+
+        .icon-leaf {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z' /%3E%3C/svg%3E");
+        }
+
+        .icon-document {
+            width: 32px;
+            height: 32px;
+            background-image: url('book.png');
+            background-size: cover;
+            display: inline-block;
+        }
+
+        .icon-chemical {
+            width: 32px;
+            height: 32px;
+            background-image: url('compound.png');
+            background-size: cover;
+            display: inline-block;
+        }
+
+        .icon-map {
+            width: 32px;
+            height: 32px;
+            background-image: url('placeholder.png');
+            background-size: cover;
+            display: inline-block;
+        }
+
+
+        .icon-search {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z' /%3E%3C/svg%3E");
+        }
+
+        .icon-alert {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.008v.008H12v-.008Z' /%3E%3C/svg%3E");
+        }
+
+        .icon-count {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M7.5 3.75H6A2.25 2.25 0 0 0 3.75 6v1.5M16.5 3.75H18A2.25 2.25 0 0 1 20.25 6v1.5m0 9V18A2.25 2.25 0 0 1 18 20.25h-1.5m-9 0H6A2.25 2.25 0 0 1 3.75 18v-1.5M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z' /%3E%3C/svg%3E");
+        }
+
+        .icon {
+            width: 1.75rem;
+            height: 1.75rem;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .embrapa-logo {
+            filter: grayscale(100%);
+            /* Ajuste para combinar melhor */
+            opacity: 0.7;
+            height: 20px;
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen">
+
+    <!-- Contêiner principal simulando um celular -->
+    <div id="app-container"
+        class="relative w-full max-w-md h-[800px] max-h-[90vh] bg-white rounded-3xl shadow-2xl overflow-hidden">
+
+        <!-- Conteúdo das Telas -->
+        <main id="screen-container" class="w-full h-full overflow-y-auto pb-20">
+
+            <!-- Tela 0: Login (Substitui Splash) -->
+            <div id="screen-login" class="p-8 screen active flex flex-col justify-center h-full" data-screen="login">
+                <div class="text-center mb-10">
+                    <img src="logo_raizsafe.jpg" alt="Logo RaizSafe" class="w-32 h-32 object-contain mx-auto">
+                </div>
+
+                <form action="#" onsubmit="return false;">
+                    <div class="mb-4">
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail ou
+                            Matrícula</label>
+                        <input type="email" id="email" value="agricultor@exemplo.com"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                        <input type="password" id="password" value="********"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    </div>
+
+                    <button id="login-button" data-target="home"
+                        class="w-full bg-green-600 text-white p-4 rounded-lg shadow-lg hover:bg-green-700 transition-all font-bold text-lg">
+                        Entrar
+                    </button>
+
+                    <div class="text-center mt-6">
+                        <a href="#" class="text-sm text-green-600 hover:underline">Esqueceu a senha?</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tela 1: Home (Inicial) -->
+            <div id="screen-home" class="p-6 screen hidden" data-screen="home">
+                <header class="flex justify-between items-center mb-6">
+                    <div>
+                        <p class="text-sm text-gray-500">Bem-vindo(a),</p>
+                        <h1 id="user-name" class="text-2xl font-bold text-gray-800">Agricultor</h1>
+                    </div>
+                    <img src="logo_raizsafe.jpg" alt="Logo RaizSafe" class="w-12 h-12 object-contain">
+                </header>
+
+                <!-- Cards de Resumo -->
+                <div class="grid grid-cols-3 gap-3 mb-6">
+                    <div class="bg-blue-100 text-blue-800 p-3 rounded-xl shadow-sm">
+                        <span class="icon icon-count text-blue-800"></span>
+                        <p class="text-xs mt-1">Total de Diagnósticos</p>
+                        <p class="font-bold text-xl">12</p>
+                    </div>
+                    <div class="bg-red-100 text-red-800 p-3 rounded-xl shadow-sm">
+                        <span class="icon icon-alert text-red-800"></span>
+                        <p class="text-xs mt-1">Alertas na Região</p>
+                        <p class="font-bold text-xl">2</p>
+                    </div>
+                    <div class="bg-green-100 text-green-800 p-3 rounded-xl shadow-sm">
+                        <span class="icon icon-document text-green-800"></span>
+                        <p class="text-xs mt-1">PDFs Salvos</p>
+                        <p class="font-bold text-xl">4</p>
+                    </div>
+                </div>
+
+                <!-- Barra de Busca -->
+                <div class="relative mb-6">
+                    <input type="text" placeholder="Buscar praga ou cultura..."
+                        class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <span class="icon icon-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></span>
+                </div>
+
+                <!-- Alertas da Região (Mapeamento Preditivo) -->
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-3">Alertas Ativos</h2>
+                    <button data-target="map"
+                        class="w-full bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded-lg shadow-sm text-left hover:bg-yellow-200 transition-all">
+                        <h3 class="font-bold">Risco Moderado de Broca do Abacaxi</h3>
+                        <p class="text-sm">Focos detectados em Itabaiana e Estância.</p>
+                        <p class="text-xs text-gray-600 mt-2">Toque para ver o mapa de pragas.</p>
+                    </button>
+                </div>
+
+                <!-- Diagnósticos Recentes -->
+                <div class="mt-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="text-lg font-semibold text-gray-800">Diagnósticos Recentes</h2>
+                        <button data-target="history" class="text-sm text-green-600 font-medium">Ver tudo</button>
+                    </div>
+                    <div id="history-preview" class="space-y-3">
+                        <!-- O conteúdo aqui será preenchido pelo JS dependendo do plano -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tela 2: Câmera / Upload -->
+            <div id="screen-camera" class="p-6 screen hidden" data-screen="camera">
+                <header class="flex items-center mb-6 relative">
+                    <button data-target="home" class="absolute left-0 p-2 -ml-2 rounded-full hover:bg-gray-100">
+                        <span class="icon icon-back"></span>
+                    </button>
+                    <h1 class="text-xl font-bold text-gray-800 text-center w-full">Novo Diagnóstico</h1>
+                </header>
+                <div class="flex flex-col items-center justify-center h-[calc(100%-80px)]">
+                    <div
+                        class="w-full aspect-square bg-gray-800 rounded-2xl flex items-center justify-center mb-6 overflow-hidden">
+                        <img src="https://placehold.co/400x400/222222/FFFFFF?text=Simula%C3%A7%C3%A3o+da+C%C3%A2mera"
+                            alt="Camera preview" class="object-cover w-full h-full">
+                    </div>
+                    <p class="text-center text-gray-600 mb-6">Posicione a parte afetada no centro e garanta boa
+                        iluminação.</p>
+                    <button data-target="analysis"
+                        class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center shadow-xl border-4 border-white ring-2 ring-green-600 focus:outline-none">
+                        <span class="icon icon-camera"
+                            style="width: 2rem; height: 2rem; filter: brightness(0) invert(1);"></span>
+                    </button>
+                    <button data-target="analysis" class="mt-4 text-green-600 font-medium">Escolher da Galeria</button>
+                </div>
+            </div>
+
+            <!-- Tela 3: Análise (Loading) -->
+            <div id="screen-analysis" class="p-6 screen hidden" data-screen="analysis">
+                <div class="flex flex-col items-center justify-center h-full text-center">
+                    <img src="broca.jpg" alt="Foto da planta"
+                        class="rounded-2xl shadow-lg mb-8 max-w-[80%] max-h-[40%] object-contain">
+                    <!-- Loading Spinner --><svg class="animate-spin -ml-1 mr-3 h-10 w-10 text-green-600 mb-4"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    <h1 class="text-2xl font-bold text-gray-800">Analisando...</h1>
+                    <p class="text-gray-600 mt-2">Nossa IA está comparando sua imagem com milhares de pragas e doenças.
+                    </p>
+                    <img src="logo_raizsafe.jpg" alt="Logo RaizSafe" class="w-24 mt-8 opacity-75">
+                </div>
+            </div>
+
+            <!-- Tela 4: Resultado (Plano Gratuito) -->
+            <div id="screen-result-free" class="p-6 screen hidden" data-screen="result-free">
+                <header class="flex items-center mb-6 relative">
+                    <button data-target="home" class="absolute left-0 p-2 -ml-2 rounded-full hover:bg-gray-100">
+                        <span class="icon icon-back"></span>
+                    </button>
+                    <h1 class="text-xl font-bold text-gray-800 text-center w-full">Diagnóstico</h1>
+                </header>
+
+                <img src="broca.jpg" alt="Foto da planta analisada"
+                    class="rounded-2xl shadow-lg mb-4 w-full object-cover max-h-[250px]">
+
+                <div class="bg-white p-5 rounded-2xl shadow-md">
+                    <p class="text-sm font-medium text-green-600">Diagnóstico Preliminar</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mt-1">Broca do Abacaxi</h2>
+                    <p class="text-gray-600 mt-1">Nome científico: Thecla basilides</p>
+                    <div class="mt-2 bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full inline-block">
+                        Confiança: 88%
+                    </div>
+
+                    <p class="text-gray-700 mt-4">
+                        A broca do abacaxi é uma lagarta que causa danos internos aos frutos, tornando-os impróprios
+                        para consumo e venda. A imagem mostra os túneis e a degradação da polpa.
+                    </p>
+                </div>
+
+                <!-- Gancho Premium -->
+                <div
+                    class="mt-6 bg-gradient-to-br from-green-600 to-green-800 text-white p-6 rounded-2xl shadow-lg text-center">
+                    <span class="icon icon-sparkles"
+                        style="width: 2.5rem; height: 2.5rem; filter: brightness(0) invert(1); margin: auto;"></span>
+                    <h3 class="text-xl font-bold mt-3">Assine o RaizSafe Premium</h3>
+                    <p class="font-light mt-2 mb-4">Receba o plano de ação completo para combater esta praga e proteger
+                        sua lavoura.</p>
+
+                    <ul class="text-left space-y-2 mb-6 text-green-100">
+                        <li class="flex items-center"><span class="icon icon-check"
+                                style="filter: brightness(0) invert(1) !important; margin-right: 8px;"></span>Recomendações
+                            detalhadas</li>
+                        <li class="flex items-center"><span class="icon icon-check"
+                                style="filter: brightness(0) invert(1) !important; margin-right: 8px;"></span>Controle
+                            Biológico e Químico</li>
+                        <li class="flex items-center"><span class="icon icon-check"
+                                style="filter: brightness(0) invert(1) !important; margin-right: 8px;"></span>Suporte de
+                            especialistas</li>
+                        <li class="flex items-center"><span class="icon icon-check"
+                                style="filter: brightness(0) invert(1) !important; margin-right: 8px;"></span>Histórico
+                            ilimitado</li>
+                    </ul>
+
+                    <button id="upgrade-button"
+                        class="w-full bg-white text-green-700 font-bold py-3 px-5 rounded-lg shadow-md hover:bg-gray-100 transition-all">
+                        Ver Plano de Ação (R$ 9,90/mês)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tela 5: Resultado (Plano Premium) -->
+            <div id="screen-result-premium" class="p-6 screen hidden" data-screen="result-premium">
+                <header class="flex items-center mb-6 relative">
+                    <button data-target="home" class="absolute left-0 p-2 -ml-2 rounded-full hover:bg-gray-100">
+                        <span class="icon icon-back"></span>
+                    </button>
+                    <h1 class="text-xl font-bold text-gray-800 text-center w-full">Plano de Ação</h1>
+                </header>
+
+                <img src="broca.jpg" alt="Foto da planta analisada"
+                    class="rounded-2xl shadow-lg mb-4 w-full object-cover max-h-[250px]">
+
+                <div class="bg-white p-5 rounded-2xl shadow-md mb-6">
+                    <p class="text-sm font-medium text-green-600">Diagnóstico Confirmado (Premium)</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mt-1">Broca do Abacaxi</h2>
+                    <p class="text-gray-600 mt-1">Nome científico: Thecla basilides</p>
+                    <div class="mt-2 bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full inline-block">
+                        Confiança: 88%
+                    </div>
+                </div>
+
+                <!-- Plano de Ação (Premium) -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Plano de Ação Recomendado</h3>
+                    <!-- Abas de Navegação -->
+                    <div class="mb-4 border-b border-gray-200">
+                        <nav id="tabs-nav" class="flex -mb-px" aria-label="Tabs">
+                            <button data-tab="tab-bio"
+                                class="tab-button whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm border-green-600 text-green-600">
+                                Controle Biológico
+                            </button>
+                            <button data-tab="tab-quimico"
+                                class="tab-button whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                Controle Químico
+                            </button>
+                            <button data-tab="tab-prev"
+                                class="tab-button whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                Prevenção
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Conteúdo das Abas -->
+                    <div id="tabs-content" class="space-y-4">
+                        <div id="tab-bio" class="tab-pane">
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <h4 class="font-bold text-green-700 flex items-center"><span
+                                        class="icon icon-leaf mr-2"></span>Inimigos Naturais</h4>
+                                <p class="text-gray-700 text-sm mt-1">Ataque de formigas (Solenopsis spp.) sobre as
+                                    pupas da broca pode ser um controle natural. O parasitoide Telenomus alecto é um
+                                    inimigo natural dos ovos da broca.</p>
+                            </div>
+                        </div>
+                        <div id="tab-quimico" class="tab-pane hidden">
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <h4 class="font-bold text-red-700 flex items-center"><span
+                                        class="icon icon-chemical mr-2"></span>Inseticidas</h4>
+                                <p class="text-gray-700 text-sm mt-1">Aplicação de inseticidas com registro para
+                                    abacaxi, como os à base de Fipronil ou Clorantraniliprole. <strong
+                                        class="text-red-600">Atenção:</strong> Siga rigorosamente as doses, épocas de
+                                    aplicação e carências do produto.</p>
+                            </div>
+                        </div>
+                        <div id="tab-prev" class="tab-pane hidden">
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <h4 class="font-bold text-blue-700 flex items-center"><span
+                                        class="icon icon-check mr-2"></span>Manejo Cultural</h4>
+                                <p class="text-gray-700 text-sm mt-1">Elimine restos culturais e frutos velhos onde a
+                                    broca pode se hospedar. Realize o embolsamento dos frutos jovens para proteção
+                                    física.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Suporte Premium -->
+                <div class="mt-6 flex items-center justify-between">
+                    <button
+                        class="flex-grow bg-gray-800 text-white p-4 rounded-lg shadow-md hover:bg-gray-900 transition-all flex items-center justify-center text-center">
+                        <span class="icon icon-user" style="filter: brightness(0) invert(1); margin-right: 8px;"></span>
+                        Falar com Especialista
+                    </button>
+                    <img src="embrapa.png" alt="Logo Embrapa" class="embrapa-logo ml-4">
+                </div>
+
+            </div>
+
+            <!-- Tela 6: Mapa de Pragas -->
+            <div id="screen-map" class="p-6 screen hidden" data-screen="map">
+                <header class="flex items-center mb-6 relative">
+                    <button data-target="home" class="absolute left-0 p-2 -ml-2 rounded-full hover:bg-gray-100">
+                        <span class="icon icon-back"></span>
+                    </button>
+                    <h1 class="text-xl font-bold text-gray-800 text-center w-full">Mapa de Pragas</h1>
+                </header>
+
+                <div class="relative w-full h-80 bg-gray-200 rounded-2xl overflow-hidden shadow-lg mb-4">
+                    <!-- Simulação de Mapa --><img src="sergipe].png" alt="Mapa de Sergipe"
+                        class="w-full h-full object-cover">
+                    <div class="absolute top-[60%] left-[45%] w-4 h-4 bg-red-500 rounded-full animate-pulse border-2 border-white"
+                        title="Broca do Abacaxi em Estância"></div>
+                    <div class="absolute top-[40%] left-[70%] w-4 h-4 bg-yellow-500 rounded-full border-2 border-white"
+                        title="Ferrugem da Laranja em Lagarto"></div>
+                    <div class="absolute top-[30%] left-[60%] w-4 h-4 bg-yellow-500 rounded-full border-2 border-white"
+                        title="Ferrugem da Laranja em Nossa Senhora da Glória"></div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl shadow-md">
+                    <h3 class="font-bold text-lg mb-2">Legenda</h3>
+                    <div class="flex items-center mb-1">
+                        <div class="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                        <p class="text-sm text-gray-700">Risco Alto (Broca do Abacaxi)</p>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-4 h-4 bg-yellow-500 rounded-full mr-2"></div>
+                        <p class="text-sm text-gray-700">Risco Moderado (Ferrugem da Laranja)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tela 7: Biblioteca de PDFs -->
+            <div id="screen-library" class="p-6 screen hidden" data-screen="library">
+                <header class="flex items-center mb-6 relative">
+                    <button data-target="home" class="absolute left-0 p-2 -ml-2 rounded-full hover:bg-gray-100">
+                        <span class="icon icon-back"></span>
+                    </button>
+                    <h1 class="text-xl font-bold text-gray-800 text-center w-full">Biblioteca de Conteúdo</h1>
+                </header>
+
+                <p class="text-gray-600 mb-4">Acesse materiais educativos e guias de manejo da Embrapa e outros
+                    parceiros.</p>
+
+                <div class="space-y-4">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Manejo da Broca do Abacaxi</h3>
+                            <p class="text-sm text-gray-500 flex items-center">
+                                <img src="embrapa.png" alt="Logo Embrapa" class="embrapa-logo mr-2 mt-0.5"> Embrapa
+                            </p>
+                        </div>
+                        <button class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">Download
+                            PDF</button>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Cultivo e Doenças da Laranja</h3>
+                            <p class="text-sm text-gray-500 flex items-center">
+                                <img src="embrapa.png" alt="Logo Embrapa" class="embrapa-logo mr-2 mt-0.5"> Embrapa
+                            </p>
+                        </div>
+                        <button class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">Download
+                            PDF</button>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Guia Completo do Milho</h3>
+                            <p class="text-sm text-gray-500 flex items-center">
+                                <img src="embrapa.png" alt="Logo Embrapa" class="embrapa-logo mr-2 mt-0.5"> Embrapa
+                            </p>
+                        </div>
+                        <button class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">Download
+                            PDF</button>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Pragas do Coqueiro e Controle</h3>
+                            <p class="text-sm text-gray-500 flex items-center">
+                                <img src="embrapa.png" alt="Logo Embrapa" class="embrapa-logo mr-2 mt-0.5"> Embrapa
+                            </p>
+                        </div>
+                        <button class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">Download
+                            PDF</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tela 8: Histórico (Bloqueado) -->
+            <div id="screen-history-locked" class="p-6 screen hidden" data-screen="history-locked">
+                <header class="flex items-center mb-6 relative">
+                    <button data-target="home" class="absolute left-0 p-2 -ml-2 rounded-full hover:bg-gray-100">
+                        <span class="icon icon-back"></span>
+                    </button>
+                    <h1 class="text-xl font-bold text-gray-800 text-center w-full">Histórico</h1>
+                </header>
+                <div class="flex flex-col items-center justify-center h-[calc(100%-120px)] text-center">
+                    <span class="icon icon-lock text-gray-400" style="width: 4rem; height: 4rem;"></span>
+                    <h2 class="text-2xl font-bold text-gray-800 mt-4">Histórico Completo é Premium</h2>
+                    <p class="text-gray-600 mt-2 mb-6">Assine o RaizSafe Premium para salvar todos os seus diagnósticos
+                        e acompanhar a saúde da sua lavoura ao longo do tempo.</p>
+                    <button data-target="profile"
+                        class="w-full bg-green-600 text-white font-bold py-3 px-5 rounded-lg shadow-md hover:bg-green-700 transition-all">
+                        Ver Planos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tela 9: Histórico (Premium) -->
+            <div id="screen-history-list" class="p-6 screen hidden" data-screen="history-list">
+                <header class="flex items-center mb-6 relative">
+                    <button data-target="home" class="absolute left-0 p-2 -ml-2 rounded-full hover:bg-gray-100">
+                        <span class="icon icon-back"></span>
+                    </button>
+                    <h1 class="text-xl font-bold text-gray-800 text-center w-full">Histórico de Diagnósticos</h1>
+                </header>
+                <div class="space-y-4">
+                    <div class="flex items-center bg-white p-4 rounded-2xl shadow-sm">
+                        <img src="broca.jpg" alt="Diagnóstico Broca Abacaxi"
+                            class="w-16 h-16 rounded-lg object-cover mr-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Broca do Abacaxi</h3>
+                            <p class="text-sm text-gray-500">27 de Novembro de 2025</p>
+                        </div>
+                        <span class="icon icon-back -rotate-180 ml-auto text-gray-400"></span>
+                    </div>
+                    <div class="flex items-center bg-white p-4 rounded-2xl shadow-sm">
+                        <img src="ferrugem.webp" alt="Diagnóstico anterior"
+                            class="w-16 h-16 rounded-lg object-cover mr-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Ferrugem da Laranja</h3>
+                            <p class="text-sm text-gray-500">24 de Outubro de 2025</p>
+                        </div>
+                        <span class="icon icon-back -rotate-180 ml-auto text-gray-400"></span>
+                    </div>
+                    <div class="flex items-center bg-white p-4 rounded-2xl shadow-sm">
+                        <img src="pulgao-inseto-folha-verde.png" alt="Diagnóstico anterior"
+                            class="w-16 h-16 rounded-lg object-cover mr-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Pulgão-verde (Aphis spiraecola)</h3>
+                            <p class="text-sm text-gray-500">15 de Outubro de 2025</p>
+                        </div>
+                        <span class="icon icon-back -rotate-180 ml-auto text-gray-400"></span>
+                    </div>
+                    <div class="flex items-center bg-white p-4 rounded-2xl shadow-sm">
+                        <img src="mancha.jpg" alt="Diagnóstico anterior" class="w-16 h-16 rounded-lg object-cover mr-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Mancha-preta (Guignardia citricarpa)</h3>
+                            <p class="text-sm text-gray-500">02 de Setembro de 2025</p>
+                        </div>
+                        <span class="icon icon-back -rotate-180 ml-auto text-gray-400"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tela 10: Perfil / Configurações -->
+            <div id="screen-profile" class="p-6 screen hidden" data-screen="profile">
+                <header class="flex items-center mb-6 relative">
+                    <button data-target="home" class="absolute left-0 p-2 -ml-2 rounded-full hover:bg-gray-100">
+                        <span class="icon icon-back"></span>
+                    </button>
+                    <h1 class="text-xl font-bold text-gray-800 text-center w-full">Meu Perfil</h1>
+                </header>
+
+                <div class="flex flex-col items-center mb-8">
+                    <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center mb-4">
+                        <span class="icon icon-user text-gray-500" style="width: 3rem; height: 3rem;"></span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800">Olá, Agricultor</h2>
+                    <p class="text-gray-500">email@exemplo.com</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-md mb-6">
+                    <h3 class="text-sm font-medium text-gray-500 mb-2">Status da Conta</h3>
+                    <div id="plan-status-free" class="text-center">
+                        <p class="text-xl font-semibold text-gray-800">Plano Gratuito</p>
+                        <p class="text-gray-600 text-sm mt-1 mb-4">Você está usando o diagnóstico básico.</p>
+                        <button id="upgrade-button-profile"
+                            class="w-full bg-green-600 text-white font-bold py-3 px-5 rounded-lg shadow-md hover:bg-green-700 transition-all">
+                            Fazer Upgrade para Premium
+                        </button>
+                    </div>
+                    <div id="plan-status-premium" class="hidden text-center">
+                        <p class="text-xl font-semibold text-green-700">Plano Premium Ativo</p>
+                        <p class="text-gray-600 text-sm mt-1 mb-4">Próxima renovação: 27/11/2025</p>
+                        <button id="downgrade-button-profile"
+                            class="w-full bg-red-100 text-red-700 font-bold py-3 px-5 rounded-lg hover:bg-red-200 transition-all">
+                            Cancelar Assinatura
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <button
+                        class="w-full text-left bg-white p-4 rounded-lg shadow-sm text-gray-700 hover:bg-gray-50">Configurações
+                        da Conta</button>
+                    <button
+                        class="w-full text-left bg-white p-4 rounded-lg shadow-sm text-gray-700 hover:bg-gray-50">Ajuda
+                        e Suporte</button>
+                    <button
+                        class="w-full text-left bg-white p-4 rounded-lg shadow-sm text-red-600 font-medium hover:bg-gray-50">Sair</button>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Barra de Navegação Inferior Fixa -->
+        <nav
+            class="absolute bottom-0 left-0 w-full h-20 bg-white border-t border-gray-200 flex justify-around items-center shadow-inner">
+            <button data-target="home" class="nav-button flex flex-col items-center justify-center text-green-600">
+                <span class="icon icon-home"></span>
+                <span class="text-xs font-medium">Início</span>
+            </button>
+            <button data-target="camera"
+                class="nav-button flex flex-col items-center justify-center text-gray-500 hover:text-green-600">
+                <span class="icon icon-camera"></span>
+                <span class="text-xs font-medium">Diagnóstico</span>
+            </button>
+            <button data-target="map"
+                class="nav-button flex flex-col items-center justify-center text-gray-500 hover:text-green-600">
+                <span class="icon icon-map"></span>
+                <span class="text-xs font-medium">Mapa</span>
+            </button>
+            <button data-target="library"
+                class="nav-button flex flex-col items-center justify-center text-gray-500 hover:text-green-600">
+                <span class="icon icon-document"></span>
+                <span class="text-xs font-medium">Biblioteca</span>
+            </button>
+            <button data-target="profile"
+                class="nav-button flex flex-col items-center justify-center text-gray-500 hover:text-green-600">
+                <span class="icon icon-user"></span>
+                <span class="text-xs font-medium">Perfil</span>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        // URLs das imagens anexadas
+        const ABACAXI_BROCA_IMAGE = "broca.jpg"; // Image 1
+        const EMBRAPA_LOGO_IMAGE = "embrapa.png"; // Image 2
+        const RAIZSAFE_LOGO_IMAGE = "logo_raizsafe.jpg"; // Image 3
+
+
+        // Estado inicial do aplicativo
+        let appState = {
+            currentUserPlan: 'free', // 'free' ou 'premium'
+            currentScreen: 'login' // Começa no Login
+        };
+
+        // Seletores
+        const screens = document.querySelectorAll('.screen');
+        const navButtons = document.querySelectorAll('.nav-button');
+        const actionButtons = document.querySelectorAll('[data-target]');
+        const tabsNav = document.getElementById('tabs-nav');
+        const tabsContent = document.getElementById('tabs-content');
+
+        // Botão de Login
+        const loginButton = document.getElementById('login-button');
+
+        // Elementos de status do plano
+        const planStatusFree = document.getElementById('plan-status-free');
+        const planStatusPremium = document.getElementById('plan-status-premium');
+        const historyPreview = document.getElementById('history-preview');
+
+        // Função para mostrar a tela correta
+        function showScreen(screenName) {
+            screens.forEach(screen => {
+                if (screen.dataset.screen === screenName) {
+                    screen.classList.remove('hidden');
+                    screen.classList.add('active');
+                } else {
+                    screen.classList.add('hidden');
+                    screen.classList.remove('active');
+                }
+            });
+            appState.currentScreen = screenName;
+            updateNav(screenName);
+            updateDynamicContent();
+
+            // Scroll para o topo da nova tela
+            document.getElementById('screen-container').scrollTop = 0;
+        }
+
+        // Função para atualizar a aparência da barra de navegação
+        function updateNav(screenName) {
+            navButtons.forEach(button => {
+                const target = button.dataset.target;
+
+                let isActive = false;
+
+                // Lógica para abas de navegação
+                if (target === screenName) {
+                    isActive = true;
+                } else if (target === 'history' && (screenName === 'history-list' || screenName === 'history-locked')) {
+                    isActive = true;
+                } else if (target === 'camera' && ['camera', 'analysis', 'result-free', 'result-premium'].includes(screenName)) {
+                    isActive = true;
+                }
+                // Home fica ativa por padrão se não houver outra específica
+                else if (target === 'home' && !isActive && ['camera', 'analysis', 'result-free', 'result-premium', 'map', 'library', 'history-list', 'history-locked', 'profile', 'login'].includes(screenName) === false) {
+                    isActive = true;
+                }
+
+                if (isActive) {
+                    button.classList.add('text-green-600');
+                    button.classList.remove('text-gray-500');
+                } else {
+                    button.classList.remove('text-green-600');
+                    button.classList.add('text-gray-500');
+                }
+            });
+        }
+
+        // Função para atualizar conteúdo dinâmico (status do plano)
+        function updateDynamicContent() {
+            if (appState.currentUserPlan === 'free') {
+                // Perfil
+                if (planStatusFree) planStatusFree.classList.remove('hidden');
+                if (planStatusPremium) planStatusPremium.classList.add('hidden');
+                // Histórico na Home
+                if (historyPreview) {
+                    historyPreview.innerHTML = `
+                        <div class="flex items-center justify-center text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <span class="icon icon-lock text-gray-400 mr-2"></span>
+                            <p class="text-sm text-gray-600">Assine o Premium para ver seu histórico completo.</p>
+                        </div>
+                    `;
+                }
+            } else { // Plano Premium
+                // Perfil
+                if (planStatusFree) planStatusFree.classList.add('hidden');
+                if (planStatusPremium) planStatusPremium.classList.remove('hidden');
+                // Histórico na Home
+                if (historyPreview) {
+                    historyPreview.innerHTML = `
+                        <button data-target="result-premium" class="w-full flex items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100 hover:bg-gray-50">
+                            <img src="${ABACAXI_BROCA_IMAGE}" alt="Histórico" class="w-12 h-12 rounded-lg object-cover mr-3">
+                            <div>
+                                <h3 class="font-semibold text-gray-700 text-sm">Broca do Abacaxi</h3>
+                                <p class="text-xs text-gray-500">27 de Novembro de 2025</p>
+                            </div>
+                        </button>
+                    `;
+                    // Adiciona o listener ao novo botão
+                    historyPreview.querySelector('button').addEventListener('click', () => showScreen('result-premium'));
+                }
+            }
+        }
+
+        // Lógica para todos os botões de ação e navegação
+        actionButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                let target = button.dataset.target;
+
+                // Lógica de simulação de análise
+                if (target === 'analysis') {
+                    showScreen('analysis');
+                    // Simula o tempo de análise da IA
+                    setTimeout(() => {
+                        if (appState.currentUserPlan === 'free') {
+                            showScreen('result-free');
+                        } else {
+                            showScreen('result-premium');
+                        }
+                    }, 2000); // 2 segundos de loading
+                    return; // Impede a execução do showScreen padrão
+                }
+
+                // Lógica de bloqueio do Histórico
+                if (target === 'history') {
+                    if (appState.currentUserPlan === 'free') {
+                        showScreen('history-locked');
+                    } else {
+                        showScreen('history-list');
+                    }
+                    return; // Impede a execução do showScreen padrão
+                }
+
+                // Navegação padrão
+                showScreen(target);
+            });
+        });
+
+        // Lógica para Abas (Tabs) na tela Premium
+        if (tabsNav) {
+            const tabButtons = tabsNav.querySelectorAll('.tab-button');
+            const tabPanes = tabsContent.querySelectorAll('.tab-pane');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Desativa todas as abas
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('border-green-600', 'text-green-600');
+                        btn.classList.add('border-transparent', 'text-gray-500');
+                    });
+                    // Ativa a aba clicada
+                    button.classList.add('border-green-600', 'text-green-600');
+                    button.classList.remove('border-transparent', 'text-gray-500');
+
+                    // Mostra o painel correto
+                    const targetTab = button.dataset.tab;
+                    tabPanes.forEach(pane => {
+                        if (pane.id === targetTab) {
+                            pane.classList.remove('hidden');
+                        } else {
+                            pane.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        }
+
+        // Lógica dos botões de Upgrade/Downgrade
+        const upgradeButton = document.getElementById('upgrade-button');
+        const upgradeButtonProfile = document.getElementById('upgrade-button-profile');
+        const downgradeButtonProfile = document.getElementById('downgrade-button-profile');
+
+        function handleUpgrade() {
+            appState.currentUserPlan = 'premium';
+            // Leva o usuário para o resultado premium que ele acabou de "comprar"
+            showScreen('result-premium');
+        }
+
+        function handleDowngrade() {
+            appState.currentUserPlan = 'free';
+            updateDynamicContent(); // Atualiza a tela de perfil
+        }
+
+        if (upgradeButton) upgradeButton.addEventListener('click', handleUpgrade);
+        if (upgradeButtonProfile) upgradeButtonProfile.addEventListener('click', handleUpgrade);
+        if (downgradeButtonProfile) downgradeButtonProfile.addEventListener('click', handleDowngrade);
+
+        // Listener para o botão de Login
+        if (loginButton) {
+            loginButton.addEventListener('click', () => {
+                // Aqui você pode adicionar lógica de validação real
+                showScreen('home');
+            });
+        }
+
+
+        // Inicialização do App
+        showScreen(appState.currentScreen);
+    </script>
+
+</body>
+
+</html>
